@@ -119,7 +119,18 @@ abbrev natCast (P : PeanoAxioms) : ℕ → P.Nat := fun n ↦ match n with
 
 /-- One can start the proof here with {syntax tactic}`unfold Function.Injective`, although it is not strictly necessary. -/
 theorem natCast_injective (P : PeanoAxioms) : Function.Injective P.natCast := by
-  sorry
+  intro a₁
+  induction a₁ with
+  | zero =>
+      intro a₂ h
+      cases a₂ with
+      | zero => rfl
+      | succ m => exfalso; exact (P.succ_ne (P.natCast m)) h.symm
+  | succ n ih =>
+      intro a₂ h
+      cases a₂ with
+      | zero => exfalso; exact P.succ_ne (P.natCast n) h
+      | succ m => rw [ih (P.succ_cancel h)]
 
 /-- One can start the proof here with {syntax tactic}`unfold Function.Surjective`, although it is not strictly necessary. -/
 theorem natCast_surjective (P : PeanoAxioms) : Function.Surjective P.natCast := by
