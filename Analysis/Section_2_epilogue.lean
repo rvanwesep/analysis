@@ -134,7 +134,18 @@ theorem natCast_injective (P : PeanoAxioms) : Function.Injective P.natCast := by
 
 /-- One can start the proof here with {syntax tactic}`unfold Function.Surjective`, although it is not strictly necessary. -/
 theorem natCast_surjective (P : PeanoAxioms) : Function.Surjective P.natCast := by
-  sorry
+  unfold Function.Surjective
+  have h0 : ∃ a, P.natCast a = P.zero := by
+    use 0
+  have hsucc : ∀ n : P.Nat, (∃ a, P.natCast a = n) → ∃ a, P.natCast a = P.succ n := by
+    intro n hif
+    rcases hif with ⟨a, h⟩
+    use Nat.succ a
+    have h1 : P.succ (P.natCast a) = P.succ n := by rw [h]
+    calc
+      P.natCast a.succ = P.succ (P.natCast a) := by rfl
+      _ = P.succ n := by rw [h1]
+  exact P.induction (fun n : P.Nat ↦ ∃ a, P.natCast a = n) h0 hsucc
 
 /-- The notion of an equivalence between two structures obeying the Peano axioms.
     The symbol {kw (of := «term_≃_»)}`≃` is an alias for Mathlib's {name}`Equiv` class; for instance {lean}`P.Nat ≃ Q.Nat` is
