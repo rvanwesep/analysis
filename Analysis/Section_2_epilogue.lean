@@ -157,10 +157,16 @@ class Equiv (P Q : PeanoAxioms) where
 
 /-- This exercise will require application of Mathlib's API for the {name}`Equiv` class.
     Some of this API can be invoked automatically via the {tactic}`simp` tactic. -/
-abbrev Equiv.symm {P Q: PeanoAxioms} (equiv : Equiv P Q) : Equiv Q P where
-  equiv := equiv.equiv.symm
-  equiv_zero := by sorry
-  equiv_succ n := by sorry
+abbrev Equiv.symm {P Q: PeanoAxioms} (equiv' : Equiv P Q) : Equiv Q P where
+  equiv := equiv'.equiv.symm
+  equiv_zero := by
+    rw [Equiv.symm_apply_eq]
+    rw [equiv'.equiv_zero]
+  equiv_succ n := by
+    rw [Equiv.symm_apply_eq]
+    set_option pp.explicit true in
+    rw [equiv'.equiv_succ (equiv.symm n)]
+    rw [Equiv.apply_symm_apply]
 
 /-- This exercise will require application of Mathlib's API for the {name}`Equiv` class.
     Some of this API can be invoked automatically via the {tactic}`simp` tactic. -/
