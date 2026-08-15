@@ -172,19 +172,14 @@ abbrev Equiv.symm {P Q: PeanoAxioms} (equiv' : Equiv P Q) : Equiv Q P where
     Some of this API can be invoked automatically via the {tactic}`simp` tactic. -/
 abbrev Equiv.trans {P Q R: PeanoAxioms} (equiv1 : Equiv P Q) (equiv2 : Equiv Q R) : Equiv P R where
   equiv := equiv1.equiv.trans equiv2.equiv
-  equiv_zero := by sorry
-  equiv_succ n := by sorry
+  equiv_zero := by simp [equiv1.equiv_zero, equiv2.equiv_zero]
+  equiv_succ n := by simp [equiv1.equiv_succ, equiv2.equiv_succ]
 
 /-- Useful Mathlib tools for inverting bijections include {name}`Function.surjInv` and {name}`Function.invFun`. -/
 noncomputable abbrev Equiv.fromNat (P : PeanoAxioms) : Equiv Mathlib_Nat P where
-  equiv := {
-    toFun := P.natCast
-    invFun := by sorry
-    left_inv := by sorry
-    right_inv := by sorry
-  }
-  equiv_zero := by sorry
-  equiv_succ n := by sorry
+  equiv := Equiv.ofBijective P.natCast ⟨P.natCast_injective, P.natCast_surjective⟩
+  equiv_zero := by rfl
+  equiv_succ n := by rfl
 
 /-- The task here is to establish that any two structures obeying the Peano axioms are equivalent. -/
 noncomputable abbrev Equiv.mk' (P Q : PeanoAxioms) : Equiv P Q := by sorry
