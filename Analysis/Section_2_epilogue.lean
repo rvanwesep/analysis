@@ -194,7 +194,14 @@ theorem Equiv.uniq {P Q : PeanoAxioms} (equiv1 equiv2 : PeanoAxioms.Equiv P Q) :
   obtain ⟨equiv2, equiv_zero2, equiv_succ2⟩ := equiv2
   congr
   ext n
-  sorry
+  have hzero: equiv1 P.zero = equiv2 P.zero := by rw [equiv_zero1, equiv_zero2]
+  have hsucc: ∀ n : P.Nat, equiv1 n = equiv2 n → equiv1 (P.succ n) = equiv2 (P.succ n):= by
+    intro n
+    rw [equiv_succ1, equiv_succ2]
+    intro h
+    rw [h]
+  apply P.induction (fun n : P.Nat ↦ equiv1 n = (equiv2 n)) hzero hsucc n
+
 
 /-- A sample result: recursion is well-defined on any structure obeying the Peano axioms -/
 theorem Nat.recurse_uniq {P : PeanoAxioms} (f: P.Nat → P.Nat → P.Nat) (c: P.Nat) :
