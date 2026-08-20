@@ -206,6 +206,90 @@ theorem Equiv.uniq {P Q : PeanoAxioms} (equiv1 equiv2 : PeanoAxioms.Equiv P Q) :
 /-- A sample result: recursion is well-defined on any structure obeying the Peano axioms -/
 theorem Nat.recurse_uniq {P : PeanoAxioms} (f: P.Nat → P.Nat → P.Nat) (c: P.Nat) :
     ∃! (a: P.Nat → P.Nat), a P.zero = c ∧ ∀ n, a (P.succ n) = f n (a n) := by
-  sorry
+  let R (x : P.Nat) (y : P.Nat): Prop :=
+    ∀ S : P.Nat → P.Nat → Prop,
+      (S P.zero c ∧ ∀ z w, S z w → S (P.succ z) (f z w)) → S x y
+  have hzero : ∃! y, R P.zero y := by
+    use c
+    constructor
+    . simp
+      intro S ⟨ha, hb⟩
+      exact ha
+    . intro y
+      simp
+      intro h
+      simp only [R] at h
+      let T (z w : P.Nat) : Prop := z = P.zero → w = c
+      have h2 := h T
+      simp [T] at h2
+      have h3 : ∀ (z w : P.Nat), (z = P.zero → w = c) → P.succ z = P.zero → f z w = c := by
+        intro z w _ h5
+        have h6 := P.succ_ne z
+        contradiction
+      exact h2 h3
+  have h7 : R P.zero c := by
+    intro T h8
+    exact h8.left
+  have h9 : ∀ n m, R n m → R (P.succ n) (f n m) := by
+    intro n m h10 T h11
+    have h12 := h10 T
+    have h13 := h12 h11
+    exact h11.right n m h13
+  have hsucc : ∀ x, (∃! y, R x y) → ∃! y, R (P.succ x) y := by
+    intro x h
+    obtain ⟨y, hy1, hy2⟩ := h
+    refine ⟨f x y, h9 x y hy1, ?_⟩
+    intro w hw
+    let S (z w' : P.Nat) : Prop := R z w' ∧ (z = P.succ x → w' = f x y)
+    have hS : S P.zero c ∧ ∀ z w', S z w' → S (P.succ z) (f z w') := by
+      constructor
+      · exact ⟨h7, fun hcon => absurd hcon.symm (P.succ_ne x)⟩
+      · rintro z w' ⟨hzw, _⟩
+        refine ⟨h9 z w' hzw, ?_⟩
+        intro hsx
+        have hzx : z = x := P.succ_cancel hsx
+        subst hzx
+        rw [hy2 w' hzw]
+    exact (hw S hS).2 rfl
+  have h : ∀ x, ∃! y, R x y := by
+    apply P.induction
+      (fun x => ∃! y, R x y)
+      hzero
+      hsucc
+  choose b hb using h
+  use b
+  simp at hb
+  have h14 : b P.zero = c := by
+    exact ((hb P.zero).right c h7).symm
+  have h15 : ∀ n, b (P.succ n) = f n (b n) := by
+    intro n
+    have h16 : R n (b n) := by
+      exact (hb n).left
+    have h17 : R (P.succ n) (f n (b n)) := by
+      exact (h9 n (b n)) h16
+    exact ((hb (P.succ n)).right (f n (b n)) h17).symm
+  simp
+  constructor
+  . constructor
+    . exact h14
+    . exact h15
+  . intro y h18 h19
+    ext n
+    have hz : y P.zero = b P.zero := by
+      calc
+        y P.zero = c := h18
+        _ = b P.zero := h14.symm
+    have hs : ∀ n, y n = b n → y (P.succ n) = b (P.succ n) := by
+      intro x h'
+      calc
+        y (P.succ x) = f x (y x) := h19 x
+        _ = f x (b x) := by rw [h']
+        _ = b (P.succ x) := (h15 x).symm
+    have : ∀ n, y n = b n := by
+      apply P.induction
+        (fun n ↦ y n = b n)
+        (hz)
+        (hs)
+    exact this n
 
 end PeanoAxioms
