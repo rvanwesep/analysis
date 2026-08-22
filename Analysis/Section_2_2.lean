@@ -84,7 +84,9 @@ lemma Nat.add_succ (n m:Nat) : n + (m++) = (n + m)++ := by
 
 /-- {lean}`n++ = n + 1` (Why?). Compare with Mathlib's {name}`Nat.succ_eq_add_one` -/
 theorem Nat.succ_eq_add_one (n:Nat) : n++ = n + 1 := by
-  sorry
+  have : (n + 0)++ = n + 0++ := by exact (Nat.add_succ (n : Nat) (0 : Nat)).symm
+  rw [Nat.add_zero n, Nat.zero_succ] at this
+  exact this
 
 /-- Proposition 2.2.4 (Addition is commutative). Compare with Mathlib's {name}`Nat.add_comm` -/
 theorem Nat.add_comm (n m:Nat) : n + m = m + n := by
@@ -174,7 +176,12 @@ extracts a witness `x` and a proof `hx : P x` of the property from a hypothesis 
 
 /-- Lemma 2.2.10 (unique predecessor) / Exercise 2.2.2 -/
 lemma Nat.uniq_succ_eq (a:Nat) (ha: a.IsPos) : ∃! b, b++ = a := by
-  sorry
+  rcases a with _ | b
+  . exfalso
+    have : zero = 0 := rfl
+    contradiction
+  . use b
+    simp
 
 /-- Definition 2.2.11 (Ordering of the natural numbers).
     This defines the {kw (of := «term_≤_»)}`≤` notation on the natural numbers. -/
@@ -332,20 +339,32 @@ theorem Nat.trichotomous (a b:Nat) : a < b ∨ a = b ∨ a > b := by
 def Nat.decLe : (a b : Nat) → Decidable (a ≤ b)
   | 0, b => by
     apply isTrue
-    sorry
+    exact Nat.zero_le b
   | a++, b => by
     cases decLe a b with
-    | isTrue h =>
+    | isTrue hle =>
       cases decEq a b with
-      | isTrue h =>
+      | isTrue heq =>
         apply isFalse
-        sorry
-      | isFalse h =>
+        subst heq
+        intro hintro
+        apply not_lt_self (lt_of_le_of_lt hintro (succ_gt_self a))
+      | isFalse hne =>
         apply isTrue
-        sorry
-    | isFalse h =>
+        refine (lt_iff_succ_le a b).mp ?_
+        constructor
+        . exact hle
+        exact hne
+    | isFalse hle =>
       apply isFalse
-      sorry
+      intro h
+      have h1 : a ≤ a++ := by exact (succ_gt_self a).left
+      have h2 : a ≤ b := le_trans h1 h
+      exact hle h2
+
+#print axioms Chapter2.Nat.decLe
+
+
 
 instance Nat.decidableRel : DecidableRel (· ≤ · : Nat → Nat → Prop) := Nat.decLe
 
@@ -422,4 +441,3 @@ theorem Nat.induction_from {n:Nat} {P: Nat → Prop} (hind: ∀ m, P m → P (m+
   sorry
 
 end Chapter2
-
