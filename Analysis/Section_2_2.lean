@@ -362,8 +362,6 @@ def Nat.decLe : (a b : Nat) → Decidable (a ≤ b)
       have h2 : a ≤ b := le_trans h1 h
       exact hle h2
 
-#print axioms Chapter2.Nat.decLe
-
 
 
 instance Nat.decidableRel : DecidableRel (· ≤ · : Nat → Nat → Prop) := Nat.decLe
