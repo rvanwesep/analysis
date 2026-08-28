@@ -17,7 +17,7 @@ class FinitelyAdditiveMeasure {X:Type*} (B: ConcreteBooleanAlgebra X) where
   measure_finite_additive : ∀ E F : Set X, B.measurable E → B.measurable F → Disjoint E F →
     measure (E ∪ F) = measure E + measure F
 
-/-- Example 1.4.21 -/
+/-- Example 1.4.21 (Lebesgue measure) -/
 noncomputable def FinitelyAdditiveMeasure.lebesgue (d:ℕ) : FinitelyAdditiveMeasure (LebesgueMeasurable.boolean_algebra d) :=
   {
     measure A := Lebesgue_measure A
@@ -26,7 +26,7 @@ noncomputable def FinitelyAdditiveMeasure.lebesgue (d:ℕ) : FinitelyAdditiveMea
     measure_finite_additive := by sorry
   }
 
-/-- Example 1.4.21 -/
+/-- Example 1.4.21 (restriction to a subalgebra) -/
 def FinitelyAdditiveMeasure.restrict_alg {X:Type*} {B: ConcreteBooleanAlgebra X} (μ: FinitelyAdditiveMeasure B) {B':ConcreteBooleanAlgebra X} (hBB': B' ≤ B) : FinitelyAdditiveMeasure B' :=
   {
     measure := μ.measure
@@ -35,15 +35,15 @@ def FinitelyAdditiveMeasure.restrict_alg {X:Type*} {B: ConcreteBooleanAlgebra X}
     measure_finite_additive := by sorry
   }
 
-/-- Example 1.4.21 -/
+/-- Example 1.4.21 (Jordan measure) -/
 noncomputable def FinitelyAdditiveMeasure.jordan (d:ℕ) : FinitelyAdditiveMeasure (JordanMeasurable.boolean_algebra d) :=
 (FinitelyAdditiveMeasure.lebesgue d).restrict_alg (LebesgueMeasurable.gt_jordan_boolean_algebra d)
 
-/-- Example 1.4.21 -/
+/-- Example 1.4.21 (null sets) -/
 noncomputable def FinitelyAdditiveMeasure.null (d:ℕ) : FinitelyAdditiveMeasure (IsNull.boolean_algebra d) :=
 (FinitelyAdditiveMeasure.lebesgue d).restrict_alg (IsNull.lt_lebesgue_boolean_algebra d)
 
-/-- Example 1.4.21 -/
+/-- Example 1.4.21 (elementary sets) -/
 noncomputable def FinitelyAdditiveMeasure.elem (d:ℕ) : FinitelyAdditiveMeasure (EuclideanSpace'.elementary_boolean_algebra d) :=
 (FinitelyAdditiveMeasure.lebesgue d).restrict_alg (by sorry)
 
@@ -179,7 +179,7 @@ def CountablyAdditiveMeasure.restrict_alg {X:Type*} {B B': ConcreteSigmaAlgebra 
   }
 
 /-- Example 1.4.29 (Dirac measure) -/
-theorem FinitelyAdditiveMeasure.dirac_isCountablyAdditive {X:Type*} (x₀:X) (B: ConcreteBooleanAlgebra X) : (FinitelyAdditiveMeasure.dirac x₀ B).isCountablyAdditive :=
+theorem FinitelyAdditiveMeasure.dirac_isCountablyAdditive {X:Type*} (x₀:X) (B: ConcreteBooleanAlgebra X) (hB: B.isSigmaAlgebra) : (FinitelyAdditiveMeasure.dirac x₀ B).isCountablyAdditive :=
   by sorry
 
 /-- Example 1.4.29 (Counting measure) -/
@@ -337,5 +337,5 @@ theorem BooleanAlgebra.approx_finite {X:Type*} {B: ConcreteBooleanAlgebra X} (μ
   ∃ F : Set X, B.measurable F ∧ μ (symmDiff E F) < ENNReal.ofReal ε := by sorry
 
 /-- Exercise 1.4.28(ii) (Approximation by an algebra) -/
-theorem BooleanAlgebra.approx_sigma_finite {X:Type*} {B: ConcreteBooleanAlgebra X} (μ: @Measure X (ConcreteSigmaAlgebra.generated_by B.measurableSets).measurableSpace) (hσfin: ∃ A : ℕ → Set X, (∀ n, B.measurable (A n) ∧ μ (A n) < ⊤) ∧ ⋃ n, A n = ⊤) : ∀ (ε : ℝ) (hε: ε>0) (E : Set X) (hE: (ConcreteSigmaAlgebra.generated_by B.measurableSets).measurable E),
+theorem BooleanAlgebra.approx_sigma_finite {X:Type*} {B: ConcreteBooleanAlgebra X} (μ: @Measure X (ConcreteSigmaAlgebra.generated_by B.measurableSets).measurableSpace) (hσfin: ∃ A : ℕ → Set X, (∀ n, B.measurable (A n) ∧ μ (A n) < ⊤) ∧ ⋃ n, A n = ⊤) : ∀ (ε : ℝ) (hε: ε>0) (E : Set X) (hE: (ConcreteSigmaAlgebra.generated_by B.measurableSets).measurable E) (hEfin: μ E < ⊤),
   ∃ F : Set X, B.measurable F ∧ μ (symmDiff E F) < ENNReal.ofReal ε := by sorry

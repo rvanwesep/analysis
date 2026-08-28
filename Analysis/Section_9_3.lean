@@ -115,7 +115,7 @@ theorem Convergesto.uniq {E:Set ℝ} {f: ℝ → ℝ} {L L':ℝ} {x₀:ℝ} (h: 
   let ⟨ a, ha, hconv ⟩ := (limit_of_AdherentPt _ _).mp h
   exact tendsto_nhds_unique (hf.comp ha hconv) (hf'.comp ha hconv)
 
-/-- Proposition 9.3.14 (Limit laws for functions) -/
+/-- Proposition 9.3.14 (Limit laws for functions, add) -/
 theorem Convergesto.add {E:Set ℝ} {f g: ℝ → ℝ} {L M:ℝ} {x₀:ℝ}
   (hf: Convergesto E f L x₀) (hg: Convergesto E g M x₀) :
   Convergesto E (f + g) (L + M) x₀ := by
@@ -124,37 +124,37 @@ theorem Convergesto.add {E:Set ℝ} {f g: ℝ → ℝ} {L M:ℝ} {x₀:ℝ}
     intro a ha hconv; specialize hf a ha hconv; specialize hg a ha hconv
     convert hf.add hg using 1
 
-/-- Proposition 9.3.14 (Limit laws for functions) / Exercise 9.3.2 -/
+/-- Proposition 9.3.14 (Limit laws for functions, sub) / Exercise 9.3.2 -/
 theorem Convergesto.sub {E:Set ℝ} {f g: ℝ → ℝ} {L M:ℝ} {x₀:ℝ}
   (hf: Convergesto E f L x₀) (hg: Convergesto E g M x₀) :
   Convergesto E (f - g) (L - M) x₀ := by
     sorry
 
-/-- Proposition 9.3.14 (Limit laws for functions) / Exercise 9.3.2 -/
+/-- Proposition 9.3.14 (Limit laws for functions, max) / Exercise 9.3.2 -/
 theorem Convergesto.max {E:Set ℝ} {f g: ℝ → ℝ} {L M:ℝ} {x₀:ℝ}
   (hf: Convergesto E f L x₀) (hg: Convergesto E g M x₀) :
   Convergesto E (max f g) (max L M) x₀ := by
     sorry
 
-/-- Proposition 9.3.14 (Limit laws for functions) / Exercise 9.3.2 -/
+/-- Proposition 9.3.14 (Limit laws for functions, min) / Exercise 9.3.2 -/
 theorem Convergesto.min {E:Set ℝ} {f g: ℝ → ℝ} {L M:ℝ} {x₀:ℝ}
   (hf: Convergesto E f L x₀) (hg: Convergesto E g M x₀) :
   Convergesto E (min f g) (min L M) x₀ := by
     sorry
 
-/-- Proposition 9.3.14 (Limit laws for functions) / Exercise 9.3.2 -/
+/-- Proposition 9.3.14 (Limit laws for functions, smul) / Exercise 9.3.2 -/
 theorem Convergesto.smul {E:Set ℝ} {f: ℝ → ℝ} {L:ℝ} {x₀:ℝ}
   (hf: Convergesto E f L x₀) (c:ℝ) :
   Convergesto E (c • f) (c * L) x₀ := by
     sorry
 
-/-- Proposition 9.3.14 (Limit laws for functions) / Exercise 9.3.2 -/
+/-- Proposition 9.3.14 (Limit laws for functions, mul) / Exercise 9.3.2 -/
 theorem Convergesto.mul {E:Set ℝ} {f g: ℝ → ℝ} {L M:ℝ} {x₀:ℝ}
   (hf: Convergesto E f L x₀) (hg: Convergesto E g M x₀) :
   Convergesto E (f * g) (L * M) x₀ := by
     sorry
 
-/-- Proposition 9.3.14 (Limit laws for functions) / Exercise 9.3.2.  The hypothesis in the book that g is non-vanishing on E can be dropped. -/
+/-- Proposition 9.3.14 (Limit laws for functions, div) / Exercise 9.3.2.  The hypothesis in the book that g is non-vanishing on E can be dropped. -/
 theorem Convergesto.div {E:Set ℝ} {f g: ℝ → ℝ} {L M:ℝ} {x₀:ℝ} (hM: M ≠ 0)
   (hf: Convergesto E f L x₀) (hg: Convergesto E g M x₀) :
   Convergesto E (f / g) (L / M) x₀ := by
@@ -185,13 +185,13 @@ theorem Convergesto.restrict {X Y:Set ℝ} {f: ℝ → ℝ} {L:ℝ} {x₀:ℝ} (
 
 theorem Real.sign_def (x:ℝ) : Real.sign x = if x < 0 then -1 else if x > 0 then 1 else 0 := rfl
 
-/-- Example 9.3.16 -/
+/-- Example 9.3.16 (a) -/
 theorem Convergesto.sign_right : Convergesto (.Ioi 0) Real.sign 1 0 := by sorry
 
-/-- Example 9.3.16 -/
+/-- Example 9.3.16 (b) -/
 theorem Convergesto.sign_left : Convergesto (.Iio 0) Real.sign (-1) 0 := by sorry
 
-/-- Example 9.3.16 -/
+/-- Example 9.3.16 (c) -/
 theorem Convergesto.sign_all : ¬ ∃ L, Convergesto (.univ) Real.sign L 0 := by sorry
 
 noncomputable abbrev f_9_3_17 : ℝ → ℝ := fun x ↦ if x = 0 then 1 else 0
