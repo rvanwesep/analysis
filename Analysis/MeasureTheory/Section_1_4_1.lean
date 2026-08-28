@@ -29,7 +29,7 @@ instance ConcreteBooleanAlgebra.instPartialOrder (X:Type*) : PartialOrder (Concr
 def ConcreteBooleanAlgebra.measurableSets {X:Type*} (B: ConcreteBooleanAlgebra X) : Set (Set X) :=
   { E | B.measurable E }
 
-/-- Example 1.4.3 -/
+/-- Example 1.4.3 (the largest algebra) -/
 instance ConcreteBooleanAlgebra.instOrderTop {X:Type*} : OrderTop (ConcreteBooleanAlgebra X) :=
   {
     top := {
@@ -41,7 +41,7 @@ instance ConcreteBooleanAlgebra.instOrderTop {X:Type*} : OrderTop (ConcreteBoole
     le_top := sorry
   }
 
-/-- Example 1.4.3 -/
+/-- Example 1.4.3 (the smallest algebra) -/
 instance ConcreteBooleanAlgebra.instOrderBot {X:Type*} : OrderBot (ConcreteBooleanAlgebra X) :=
   {
     bot := {
@@ -161,7 +161,7 @@ def IsPartition.finer_than {I J X:Type*} {parts_I: I → Set X} {parts_J: J → 
 def IsPartition.mono {I J X:Type*} {parts_I: I → Set X} {parts_J: J → Set X}
   (hI: IsPartition parts_I) (hJ: IsPartition parts_J)
   (h_finer: hI.finer_than hJ) :
-  hI.to_ConcreteBooleanAlgebra ≤ hJ.to_ConcreteBooleanAlgebra :=
+  hI.to_ConcreteBooleanAlgebra ≥ hJ.to_ConcreteBooleanAlgebra :=
   by sorry
 
 def IsPartition.remove_empty {I X:Type*} {parts: I → Set X} (h_part: IsPartition parts) : IsPartition (fun (i:{i:I // parts i ≠ ∅}) ↦ parts i.val) :=
@@ -268,6 +268,6 @@ instance EuclideanSpace'.elementary_boolean_algebra_generated_by_boxes (d:ℕ) :
 /-- Exercise 1.4.9 (Recursive definition of generated Boolean algebra). -/
 def ConcreteBooleanAlgebra.generated_by_eq {X:Type*} (F: Set (Set X)) :
   (ConcreteBooleanAlgebra.generated_by F).measurableSets =
-  ⋃ n, Nat.rec (motive := fun _ ↦ Set (Set X)) F (fun n G ↦ { E: Set X | (∃ S: Finset G, E = ⋃ (H:S), H) ∨ (∃ S: Finset G, E = (⋃ (H:S), H))ᶜ }) n := by sorry
+  ⋃ n, Nat.rec (motive := fun _ ↦ Set (Set X)) F (fun n G ↦ { E: Set X | (∃ S: Finset G, E = ⋃ (H:S), H) ∨ (∃ S: Finset G, E = (⋃ (H:S), H)ᶜ) }) n := by sorry
 
   

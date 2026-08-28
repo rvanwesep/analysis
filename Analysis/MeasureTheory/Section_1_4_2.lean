@@ -41,7 +41,8 @@ theorem IsNull.boolean_algebra.isSigmaAlgebra (d:ℕ) : (IsNull.boolean_algebra 
 def IsNull.sigmaAlgebra (d:ℕ) : ConcreteSigmaAlgebra (EuclideanSpace' d) :=
   (IsNull.boolean_algebra.isSigmaAlgebra d).toSigmaAlgebra
 
-theorem JordanMeasurable.boolean_algebra.not_isSigmaAlgebra (d:ℕ) : ¬ (JordanMeasurable.boolean_algebra d).isSigmaAlgebra :=
+theorem JordanMeasurable.boolean_algebra.not_isSigmaAlgebra (d:ℕ) (hd: d ≥ 1) :
+  ¬ (JordanMeasurable.boolean_algebra d).isSigmaAlgebra :=
   by sorry
 
 /-- Exercise 1.4.12 -/
@@ -158,7 +159,7 @@ open Ordinal in
 def ConcreteSigmaAlgebra.generated_by_eq {X:Type*} (F: Set (Set X)) :
   (ConcreteSigmaAlgebra.generated_by F).measurableSets =
   ⋃ α < ω₁,
-  Ordinal.limitRecOn (motive := fun _ ↦ Set (Set X)) α F (fun n G ↦ { E: Set X | (∃ S: Set G, Countable S ∧ E = ⋃ (H:S), H) ∨ (∃ S: Set G, Countable S ∧ E = (⋃ (H:S), H))ᶜ }) (fun α _ G ↦ ⋃ (β : Ordinal) (h : β < α), G β h) := by sorry
+  Ordinal.limitRecOn (motive := fun _ ↦ Set (Set X)) α F (fun n G ↦ { E: Set X | (∃ S: Set G, Countable S ∧ E = ⋃ (H:S), H) ∨ (∃ S: Set G, Countable S ∧ E = (⋃ (H:S), H)ᶜ) }) (fun α _ G ↦ ⋃ (β : Ordinal) (h : β < α), G β h) := by sorry
 
 open Cardinal in
 /-- Exercise 1.4.16 -/

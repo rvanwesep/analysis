@@ -201,19 +201,19 @@ theorem Sequence.tendsTo_iff_eq_limsup_liminf {a:Sequence} (c:ℝ) :
   a.TendsTo c ↔ a.liminf = c ∧ a.limsup = c := by
   sorry
 
-/-- Lemma 6.4.13 (Comparison principle) / Exercise 6.4.4 -/
+/-- Lemma 6.4.13 (Comparison principle, sup) / Exercise 6.4.4 -/
 theorem Sequence.sup_mono {a b:Sequence} (hm: a.m = b.m) (hab: ∀ n ≥ a.m, a n ≤ b n) :
     a.sup ≤ b.sup := by sorry
 
-/-- Lemma 6.4.13 (Comparison principle) / Exercise 6.4.4 -/
+/-- Lemma 6.4.13 (Comparison principle, inf) / Exercise 6.4.4 -/
 theorem Sequence.inf_mono {a b:Sequence} (hm: a.m = b.m) (hab: ∀ n ≥ a.m, a n ≤ b n) :
     a.inf ≤ b.inf := by sorry
 
-/-- Lemma 6.4.13 (Comparison principle) / Exercise 6.4.4 -/
+/-- Lemma 6.4.13 (Comparison principle, limsup) / Exercise 6.4.4 -/
 theorem Sequence.limsup_mono {a b:Sequence} (hm: a.m = b.m) (hab: ∀ n ≥ a.m, a n ≤ b n) :
     a.limsup ≤ b.limsup := by sorry
 
-/-- Lemma 6.4.13 (Comparison principle) / Exercise 6.4.4 -/
+/-- Lemma 6.4.13 (Comparison principle, liminf) / Exercise 6.4.4 -/
 theorem Sequence.liminf_mono {a b:Sequence} (hm: a.m = b.m) (hab: ∀ n ≥ a.m, a n ≤ b n) :
     a.liminf ≤ b.liminf := by sorry
 
@@ -222,19 +222,19 @@ theorem Sequence.lim_of_between {a b c:Sequence} {L:ℝ} (hm: b.m = a.m ∧ c.m 
   (hab: ∀ n ≥ a.m, a n ≤ b n ∧ b n ≤ c n) (ha: a.TendsTo L) (hb: c.TendsTo L) :
     b.TendsTo L := by sorry
 
-/-- Example 6.4.15 -/
+/-- Example 6.4.15 (a) -/
 example : ((fun (n:ℕ) ↦ 2/(n+1:ℝ)):Sequence).TendsTo 0 := by
   sorry
 
-/-- Example 6.4.15 -/
+/-- Example 6.4.15 (b) -/
 example : ((fun (n:ℕ) ↦ -2/(n+1:ℝ)):Sequence).TendsTo 0 := by
   sorry
 
-/-- Example 6.4.15 -/
+/-- Example 6.4.15 (c) -/
 example : ((fun (n:ℕ) ↦ (-1)^n/(n+1:ℝ) + 1 / (n+1)^2):Sequence).TendsTo 0 := by
   sorry
 
-/-- Example 6.4.15 -/
+/-- Example 6.4.15 (d) -/
 example : ((fun (n:ℕ) ↦ (2:ℝ)^(-(n:ℤ))):Sequence).TendsTo 0 := by
   sorry
 
