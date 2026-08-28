@@ -250,7 +250,7 @@ theorem SetTheory.Set.singleton_uniq (a:Object) : ∃! (X:Set), ∀ x, x ∈ X �
 
 /-- Remark 3.1.9 -/
 theorem SetTheory.Set.pair_uniq (a b:Object) : ∃! (X:Set), ∀ x, x ∈ X ↔ x = a ∨ x = b := by
-  use ({a,b}:Set); simp only []
+  use ({a,b}:Set)
   constructor
   . intro x; simp only [mem_pair]
   . intro X hX
@@ -258,7 +258,10 @@ theorem SetTheory.Set.pair_uniq (a b:Object) : ∃! (X:Set), ∀ x, x ∈ X ↔ 
     simp only [mem_pair]; exact hX x
 
 /-- Remark 3.1.9 -/
-theorem SetTheory.Set.pair_comm (a b:Object) : ({a,b}:Set) = {b,a} := by sorry
+theorem SetTheory.Set.pair_comm (a b:Object) : ({a,b}:Set) = {b,a} := by
+  ext x
+  simp only [mem_pair]
+  tauto
 
 /-- Remark 3.1.9 -/
 @[simp]
