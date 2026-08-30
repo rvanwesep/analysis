@@ -266,39 +266,68 @@ theorem SetTheory.Set.pair_comm (a b:Object) : ({a,b}:Set) = {b,a} := by
 /-- Remark 3.1.9 -/
 @[simp]
 theorem SetTheory.Set.pair_self (a:Object) : ({a,a}:Set) = {a} := by
-  sorry
+  ext x; simp only [mem_pair, mem_singleton]; tauto
 
 /-- Exercise 3.1.1 -/
 theorem SetTheory.Set.pair_eq_pair {a b c d:Object} (h: ({a,b}:Set) = {c,d}) :
     a = c ∧ b = d ∨ a = d ∧ b = c := by
-  sorry
+  simp only [SetTheory.Set.ext_iff, mem_pair] at h
+  have ha := (h a).mp (Or.inl rfl)
+  have hb := (h b).mp (Or.inr rfl)
+  have hc := (h c).mpr (Or.inl rfl)
+  have hd := (h d).mpr (Or.inr rfl)
+  grind
 
 abbrev SetTheory.Set.empty : Set := ∅
 abbrev SetTheory.Set.singleton_empty : Set := {(empty: Object)}
 abbrev SetTheory.Set.pair_empty : Set := {(empty: Object), (singleton_empty: Object)}
 
+/- The following lemma does not appear in the original text. It could be used in any of the next
+three exercises. I chose to use it only in the third for pedagogical reasons. -/
+theorem SetTheory.Set.ne_of_mem_of_not_mem {X Y : Set} {x : Object}
+    (hx : x ∈ X) (hy : x ∉ Y) : X ≠ Y :=
+  fun h => hy (h ▸ hx)
+
 /-- Exercise 3.1.2 (empty set is not a singleton) -/
-theorem SetTheory.Set.emptyset_neq_singleton : empty ≠ singleton_empty := by
-  sorry
+theorem SetTheory.Set.emptyset_neq_singleton : empty ≠ singleton_empty :=
+  fun h => (not_mem_empty empty)
+    (Eq.subst (motive := (fun x:Set => ((empty:Object) ∈ x)))
+      h.symm ((mem_singleton empty empty).mpr (Eq.refl (empty:Object))))
 
 /-- Exercise 3.1.2 (empty set is not a pair) -/
-theorem SetTheory.Set.emptyset_neq_pair : empty ≠ pair_empty := by sorry
+theorem SetTheory.Set.emptyset_neq_pair : empty ≠ pair_empty :=
+  fun h => (not_mem_empty empty)
+    (Eq.subst
+      (motive := (fun x:Set => ((empty:Object) ∈ x)))
+      h.symm
+      ((mem_pair empty empty singleton_empty).mpr
+         (Or.inl (Eq.refl (empty:Object)))))
 
 /-- Exercise 3.1.2 (singleton is not a pair) -/
 theorem SetTheory.Set.singleton_empty_neq_pair : singleton_empty ≠ pair_empty := by
-  sorry
+  have hsp : (singleton_empty:Object) ∈ pair_empty :=
+    (mem_pair singleton_empty empty singleton_empty).mpr
+      (Or.inr (Eq.refl (singleton_empty:Object)))
+  have hsns : (singleton_empty:Object) ∉ singleton_empty := by
+    intro h
+    have hseqe : (singleton_empty:Object) = empty :=
+      (mem_singleton (singleton_empty:Object) empty).mp h
+    have hseqe' : singleton_empty = empty :=
+      (coe_eq_iff singleton_empty empty).mp hseqe
+    exact emptyset_neq_singleton hseqe'.symm
+  exact (ne_of_mem_of_not_mem hsp hsns).symm
 
 /--
   Remark 3.1.11.
   (These results can be proven either by a direct rewrite, or by using extensionality.)
 -/
-theorem SetTheory.Set.union_congr_left (A A' B:Set) (h: A = A') : A ∪ B = A' ∪ B := by sorry
+theorem SetTheory.Set.union_congr_left (A A' B:Set) (h: A = A') : A ∪ B = A' ∪ B := by rw [h]
 
 /--
   Remark 3.1.11.
   (These results can be proven either by a direct rewrite, or by using extensionality.)
 -/
-theorem SetTheory.Set.union_congr_right (A B B':Set) (h: B = B') : A ∪ B = A ∪ B' := by sorry
+theorem SetTheory.Set.union_congr_right (A B B':Set) (h: B = B') : A ∪ B = A ∪ B' := by rw [h]
 
 /-- Lemma 3.1.12 (Basic properties of unions, singletons) / Exercise 3.1.3 -/
 theorem SetTheory.Set.singleton_union_singleton (a b:Object) :
@@ -322,7 +351,12 @@ theorem SetTheory.Set.union_assoc (A B C:Set) : (A ∪ B) ∪ C = A ∪ (B ∪ C
       rw [mem_union]; tauto
     have : x ∈ B ∪ C := by rw [mem_union]; tauto
     rw [mem_union]; tauto
-  sorry
+  intro hx; rw [mem_union] at hx
+  obtain case1 | case2 := hx
+  . rw [mem_union,mem_union]; tauto
+  rw [mem_union] at case2
+  rw [mem_union, mem_union]; tauto
+
 
 /-- Proposition 3.1.27(c) (Union idempotent). -/
 @[simp]
