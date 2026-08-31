@@ -292,7 +292,7 @@ theorem SetTheory.Set.ne_of_mem_of_not_mem {X Y : Set} {x : Object}
 theorem SetTheory.Set.emptyset_neq_singleton : empty ≠ singleton_empty :=
   fun h => (not_mem_empty empty)
     (Eq.subst (motive := (fun x:Set => ((empty:Object) ∈ x)))
-      h.symm ((mem_singleton empty empty).mpr (Eq.refl (empty:Object))))
+      h.symm ((mem_singleton empty empty).mpr rfl))
 
 /-- Exercise 3.1.2 (empty set is not a pair) -/
 theorem SetTheory.Set.emptyset_neq_pair : empty ≠ pair_empty :=
@@ -301,13 +301,13 @@ theorem SetTheory.Set.emptyset_neq_pair : empty ≠ pair_empty :=
       (motive := (fun x:Set => ((empty:Object) ∈ x)))
       h.symm
       ((mem_pair empty empty singleton_empty).mpr
-         (Or.inl (Eq.refl (empty:Object)))))
+         (Or.inl rfl)))
 
 /-- Exercise 3.1.2 (singleton is not a pair) -/
 theorem SetTheory.Set.singleton_empty_neq_pair : singleton_empty ≠ pair_empty := by
   have hsp : (singleton_empty:Object) ∈ pair_empty :=
     (mem_pair singleton_empty empty singleton_empty).mpr
-      (Or.inr (Eq.refl (singleton_empty:Object)))
+      (Or.inr rfl)
   have hsns : (singleton_empty:Object) ∉ singleton_empty := by
     intro h
     have hseqe : (singleton_empty:Object) = empty :=
