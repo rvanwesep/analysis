@@ -503,12 +503,20 @@ theorem SetTheory.Set.specification_axiom'' {A:Set} (P: A → Prop) (x:Object) :
   intro ⟨ h, hP ⟩
   simpa [←specification_axiom' P] using hP
 
-theorem SetTheory.Set.specify_subset {A:Set} (P: A → Prop) : A.specify P ⊆ A := by sorry
+theorem SetTheory.Set.specify_subset {A:Set} (P: A → Prop) : A.specify P ⊆ A := by
+  intro x h
+  have h1 : ∃ h:x ∈ A, P ⟨ x, h ⟩ := (specification_axiom'' P x).mp h
+  obtain ⟨h2, h3⟩ := h1
+  exact h2
 
 /-- This exercise may require some understanding of how subtypes are implemented in Lean. -/
 theorem SetTheory.Set.specify_congr {A A':Set} (hAA':A = A') {P: A → Prop} {P': A' → Prop}
   (hPP': (x:Object) → (h:x ∈ A) → (h':x ∈ A') → P ⟨ x, h⟩ ↔ P' ⟨ x, h'⟩ ) :
-    A.specify P = A'.specify P' := by sorry
+    A.specify P = A'.specify P' := by
+  subst hAA'
+  ext x
+  rw [specification_axiom'' P x, specification_axiom'' P' x]
+  exact exists_congr fun h => hPP' x h h
 
 instance SetTheory.Set.instIntersection : Inter Set where
   inter X Y := X.specify (fun x ↦ x.val ∈ Y)
@@ -585,12 +593,16 @@ instance SetTheory.Set.instDistribLattice : DistribLattice Set where
   le_antisymm := subset_antisymm
   inf := (· ∩ ·)
   sup := (· ∪ ·)
-  le_sup_left := by sorry
-  le_sup_right := by sorry
-  sup_le := by sorry
-  inf_le_left := by sorry
-  inf_le_right := by sorry
-  le_inf := by sorry
+  le_sup_left := by intro a b x hxa; exact (mem_union x a b).mpr (Or.inl hxa)
+  le_sup_right := by intro a b x hxb; exact (mem_union x a b).mpr (Or.inr hxb)
+  sup_le := by
+    intro a b c hac hbc x hab
+    rcases (mem_union x a b).mp hab with ha | hb
+    . exact hac x ha
+    exact hbc x hb
+  inf_le_left := by intro a b x hxab; exact (mem_inter x a b).mp hxab |>.1
+  inf_le_right := by intro a b x hxab; exact (mem_inter x a b).mp hxab |>.2
+  le_inf := by intro a b c hab hac x hxa; exact (mem_inter x b c).mpr ⟨hab x hxa, hac x hxa⟩
   le_sup_inf := by
     intro X Y Z; change (X ∪ Y) ∩ (X ∪ Z) ⊆ X ∪ (Y ∩ Z)
     rw [←union_inter_distrib_left]
