@@ -768,7 +768,7 @@ example : ({1, 2, 4}:Set) ∩ {2,3,4} = {2, 4} := by
   ext x
   -- Instead of unfolding repetitive branches by hand like earlier,
   -- you can use the `aesop` tactic which does this automatically.
-  aesop
+  aesop?
 
 /-- Example 3.1.25 -/
 
@@ -783,7 +783,10 @@ example : ¬ Disjoint ({1, 2, 3}:Set) {2,3,4} := by
   rw [eq_empty_iff_forall_notMem] at h
   aesop
 
-example : Disjoint (∅:Set) ∅ := by sorry
+example : Disjoint (∅:Set) ∅ := by
+  rw [disjoint_iff]
+  aesop
+
 
 /-- Example 3.1.28 (Difference sets). -/
 
@@ -792,7 +795,13 @@ example : ({1, 2, 3, 4}:Set) \ {2,4,6} = {1, 3} := by
 
 /-- Example 3.1.30 -/
 example : ({3,5,9}:Set).replace (P := fun x y ↦ ∃ (n:ℕ), x.val = n ∧ y = (n+1:ℕ)) (by aesop)
-  = {4,6,10} := by sorry
+  = {4,6,10} := by
+  ext x; simp only [replacement_axiom];
+  constructor
+  . rintro ⟨x, n, ⟨h_1, h_2⟩⟩
+    aesop
+  rintro h; aesop
+
 
 /-- Example 3.1.31 -/
 example : ({3,5,9}:Set).replace (P := fun _ y ↦ y=1) (by aesop) = {1} := by
