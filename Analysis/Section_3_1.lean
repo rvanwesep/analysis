@@ -808,7 +808,31 @@ example : ({3,5,9}:Set).replace (P := fun _ y ↦ y=1) (by aesop) = {1} := by
   ext; simp only [replacement_axiom]; aesop
 
 /-- Exercise 3.1.5.  One can use the {tactic}`tfae_have` and {tactic}`tfae_finish` tactics here. -/
-theorem SetTheory.Set.subset_tfae (A B:Set) : [A ⊆ B, A ∪ B = B, A ∩ B = A].TFAE := by sorry
+theorem SetTheory.Set.my_subset_tfae (A B:Set) : [A ⊆ B, A ∪ B = B, A ∩ B = A].TFAE := by
+  tfae_have 1 → 2 := by
+    intro hAB; aesop
+  tfae_have 2 → 3 := by
+    intro hAB -- hAB : ∀ x, (x ∈ A ∨ x ∈ B) ↔ x ∈ B
+    rw [Set.ext_iff] at hAB
+    simp only [mem_union] at hAB
+    ext x
+    simp only [mem_inter] -- ⊢ (x ∈ A ∧ x ∈ B) ↔ x ∈ A
+    have := hAB x
+    tauto
+  tfae_have 3 → 1 := by
+    intro hAB x hx
+    rw [<-hAB] at hx
+    simp only [mem_inter] at hx
+    aesop
+  tfae_finish
+
+theorem SetTheory.Set.subset_tfae (A B:Set) : [A ⊆ B, A ∪ B = B, A ∩ B = A].TFAE := by
+  simp only [subset_def, SetTheory.Set.ext_iff, mem_union, mem_inter]
+  tfae_have 1 → 2 := fun h x ↦ by have := h x; tauto
+  tfae_have 2 → 3 := fun h x ↦ by have := h x; tauto
+  tfae_have 3 → 1 := fun h x ↦ by have := h x; tauto
+  tfae_finish
+
 
 /-- Exercise 3.1.7 (a) -/
 theorem SetTheory.Set.inter_subset_left (A B:Set) : A ∩ B ⊆ A := by
@@ -858,19 +882,44 @@ theorem SetTheory.Set.partition_right {A B X:Set} (h_union: A ∪ B = X) (h_inte
   You may find {name}`Function.onFun_apply` and the {tactic}`fin_cases` tactic useful.
 -/
 theorem SetTheory.Set.pairwise_disjoint (A B:Set) :
-    Pairwise (Function.onFun Disjoint ![A \ B, A ∩ B, B \ A]) := by sorry
+    Pairwise (Function.onFun Disjoint ![A \ B, A ∩ B, B \ A]) := by
+  intro i j hij
+  fin_cases i <;> fin_cases j <;> simp_all [Function.onFun, disjoint_iff]
+  . ext x; simp [mem_sdiff, mem_inter]; tauto
+  . ext x; simp [mem_sdiff, mem_inter]; tauto
+  . ext x; simp [mem_sdiff, mem_inter]; tauto
+  . ext x; simp [mem_sdiff, mem_inter]; tauto
+  . ext x; simp [mem_sdiff, mem_inter]; tauto
+  . ext x; simp [mem_sdiff, mem_inter]; tauto
 
 /-- Exercise 3.1.10 -/
 theorem SetTheory.Set.union_eq_partition (A B:Set) : A ∪ B = (A \ B) ∪ (A ∩ B) ∪ (B \ A) := by
-  sorry
-
+  ext x
+  simp [mem_union, mem_sdiff, mem_inter]
+  tauto
 /--
   Exercise 3.1.11.
   The challenge is to prove this without using {name}`Set.specify`, {name}`Set.specification_axiom`,
   {name}`Set.specification_axiom'`, or anything built from them (like differences and intersections).
 -/
 theorem SetTheory.Set.specification_from_replacement {A:Set} {P: A → Prop} :
-    ∃ B, B ⊆ A ∧ ∀ x, x.val ∈ B ↔ P x := by sorry
+    ∃ B, B ⊆ A ∧ ∀ x, x.val ∈ B ↔ P x := by
+  let R : A → Object → Prop := fun x y ↦ P x ∧ y = x.val
+  have hP : ∀ x y y', R x y ∧ R x y' → y = y' := by
+    intro x y y' hR
+    have hRxy : P x ∧ y = ↑x := hR.1
+    have hRxy' : P x ∧ y' = ↑x := hR.2
+    by_cases hPx : P x
+    . aesop
+    . aesop
+  use A.replace hP
+  constructor
+  . intro y h
+    rw [SetTheory.Set.replacement_axiom] at h
+    obtain ⟨x, hRxy⟩ := h
+    aesop
+  . intro x
+    simp only [SetTheory.Set.replacement_axiom]; aesop
 
 /-- Exercise 3.1.12 (unions) -/
 theorem SetTheory.Set.subset_union_subset {A B A' B':Set} (hA'A: A' ⊆ A) (hB'B: B' ⊆ B) :
@@ -882,7 +931,15 @@ theorem SetTheory.Set.subset_inter_subset {A B A' B':Set} (hA'A: A' ⊆ A) (hB'B
 
 /-- Exercise 3.1.12 (differences: a counterexample) -/
 theorem SetTheory.Set.subset_diff_subset_counter :
-    ∃ (A B A' B':Set), (A' ⊆ A) ∧ (B' ⊆ B) ∧ ¬ (A' \ B') ⊆ (A \ B) := by sorry
+    ∃ (A B A' B':Set), (A' ⊆ A) ∧ (B' ⊆ B) ∧ ¬ (A' \ B') ⊆ (A \ B) := by
+  have h01 : (0:Object) ≠ 1 := by aesop
+  refine ⟨{0,1}, {0,1}, {0}, {1}, ?_, ?_, ?_⟩
+  · intro x hx; simp_all                       -- {0} ⊆ {0,1}
+  · intro x hx; simp_all                       -- {1} ⊆ {0,1}
+  · intro hsub                                 -- the counterexample
+    have h0 : (0:Object) ∈ ({0}:Set) \ {1} := by simp [h01]
+    have := hsub _ h0
+    simp_all
 
 /-
   Final part of Exercise 3.1.12: state and prove a reasonable substitute positive result for the
