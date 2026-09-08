@@ -100,7 +100,14 @@ theorem Nat.add_comm (n m:Nat) : n + m = m + n := by
 /-- Proposition 2.2.5 (Addition is associative) / Exercise 2.2.1
     Compare with Mathlib's {name}`Nat.add_assoc`. -/
 theorem Nat.add_assoc (a b c:Nat) : (a + b) + c = a + (b + c) := by
-  sorry
+  revert a; apply induction
+  . simp
+  . intro n h;
+    calc
+      (n++ + b) + c = (n + b)++ + c := by rw [succ_add]
+      _ = ((n + b) + c)++ := by rw [succ_add]
+      _ = (n + (b + c))++ := by rw [h]
+      _ = n++ + (b + c) := by rw [succ_add]
 
 /-- Proposition 2.2.6 (Cancellation law).
     Compare with Mathlib's {name}`Nat.add_left_cancel`. -/
