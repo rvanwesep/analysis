@@ -252,7 +252,17 @@ example (a b:Nat): a+b ≥ a+b := by rfl
 /-- (b) (Order is transitive).  The {tactic}`obtain` tactic will be useful here.
     Compare with Mathlib's {name}`Nat.le_trans`. -/
 theorem Nat.ge_trans {a b c:Nat} (hab: a ≥ b) (hbc: b ≥ c) : a ≥ c := by
-  sorry
+  rw [Nat.ge_iff_le] at hab
+  rw [Nat.ge_iff_le] at hbc
+  rw [Nat.le_iff] at hab
+  rw [Nat.le_iff] at hbc
+  obtain ⟨ m, hm ⟩ := hab
+  obtain ⟨ n, hn ⟩ := hbc
+  rw [Nat.ge_iff_le]
+  rw [Nat.le_iff]
+  refine ⟨n + m, ?_⟩
+  rw [hn] at hm
+  simpa [add_assoc] using hm
 
 theorem Nat.le_trans {a b c:Nat} (hab: a ≤ b) (hbc: b ≤ c) : a ≤ c := Nat.ge_trans hbc hab
 
