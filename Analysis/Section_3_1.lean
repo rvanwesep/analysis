@@ -143,7 +143,7 @@ theorem SetTheory.Set.coe_eq_iff (X Y:Set) : (X: Object) = (Y: Object) ↔  X = 
 theorem SetTheory.Set.ext {X Y:Set} (h: ∀ x, x ∈ X ↔ x ∈ Y) : X = Y := extensionality _ _ h
 
 -- Axiom 3.2 (Equality of sets, ext_iff)
-#check SetTheory.Set.ext_iff
+--#check SetTheory.Set.ext_iff
 
 instance SetTheory.Set.instEmpty : EmptyCollection Set where
   emptyCollection := emptyset
@@ -768,7 +768,7 @@ example : ({1, 2, 4}:Set) ∩ {2,3,4} = {2, 4} := by
   ext x
   -- Instead of unfolding repetitive branches by hand like earlier,
   -- you can use the `aesop` tactic which does this automatically.
-  aesop?
+  aesop
 
 /-- Example 3.1.25 -/
 

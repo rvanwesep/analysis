@@ -179,8 +179,6 @@ useful for extracting witnesses from existential statements; for instance, `obta
 extracts a witness `x` and a proof `hx : P x` of the property from a hypothesis `h : ∃ x, P x`.
 -/
 
-#check existsUnique_of_exists_of_unique
-
 /-- Lemma 2.2.10 (unique predecessor) / Exercise 2.2.2 -/
 lemma Nat.uniq_succ_eq (a:Nat) (ha: a.IsPos) : ∃! b, b++ = a := by
   rcases a with _ | b
