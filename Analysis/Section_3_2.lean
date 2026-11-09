@@ -67,7 +67,13 @@ theorem SetTheory.Set.axiom_of_regularity {A:Set} (h: A ≠ ∅) :
 -/
 theorem SetTheory.Set.emptyset_exists (h: axiom_of_universal_specification):
     ∃ (X:Set), ∀ x, x ∉ X := by
-  sorry
+    set P : Object → Prop := fun _ ↦ False
+    choose X HX using h P
+    use X
+    intro x
+    rw [HX x]
+    intro h
+    exact h
 
 /--
   Exercise 3.2.1.  The spirit of the exercise is to establish these results without using either
@@ -75,7 +81,13 @@ theorem SetTheory.Set.emptyset_exists (h: axiom_of_universal_specification):
 -/
 theorem SetTheory.Set.singleton_exists (h: axiom_of_universal_specification) (x:Object):
     ∃ (X:Set), ∀ y, y ∈ X ↔ y = x := by
-  sorry
+  set P : Object → Prop := fun y ↦ y = x
+  choose X HX using h P
+  use (discharger := skip) X
+  exact HX
+
+
+
 
 /--
   Exercise 3.2.1.  The spirit of the exercise is to establish these results without using either
